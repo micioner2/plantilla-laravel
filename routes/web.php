@@ -11,5 +11,5 @@
 
 Route::get('/','InicioController@index');
 
-
+Route::get('pregunta','PregunayRespuestaController@listarPreguntas');
 

@@ -39,7 +39,7 @@
                     <section class="content">
                         
                       <template v-if="menu==0">
-                          <inicio></inicio>
+                          <inicio :enlace="enlace"></inicio>
                       </template>
 
 
