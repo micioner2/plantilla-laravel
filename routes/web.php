@@ -11,5 +11,13 @@
 
 Route::get('/','InicioController@index');
 
-Route::get('pregunta','PregunayRespuestaController@listarPreguntas');
+Route::post('iniciar-sesion','InicioController@store');
+
+Route::get('pregunta/rellenar','PreguntaController@listPreguntaRellenar');
+
+Route::get('pregunta/opcion','PreguntaController@listPreguntaOpcion');
+
+Route::post('pregunta','PreguntaController@regRespuesta');
+
+Route::get('alumno','PreguntaController@listAlumno');
 
