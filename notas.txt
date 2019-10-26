@@ -1,0 +1,84 @@
+SELECT sum(dp.puntaje) FROM alumnos AS A INNER JOIN preguntasyrespuestas AS pr ON
+pr.id_alumno = a.id INNER JOIN preguntas as p ON P.id = PR.id_pregunta INNER JOIN detalle_preguntas AS dp ON dp.idpregunta = p.id
+WHERE a.id = 29
+
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `INSERTARTESTPREGUNTA`(nombre varchar(255),categoria INT)
+BEGIN 
+select @id :=  maximoid from controlinicial WHERE id=10;
+   INSERT INTO preguntas (id,Npregunta,categoria)  VALUES (@id+1,nombre, categoria);
+   UPDATE CONTROLINICIAL SET maximoid = @id+1 WHERE id=10;
+END$$
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE INSERTARDETALLEPREGUNTA(IN nombre varchar(255),puntaje INT)
+BEGIN 
+  SELECT @id := MAX(id)  FROM preguntas; 
+   INSERT INTO detalle_preguntas (idpregunta,nom_pregunta,puntaje)  VALUES (@id,nombre, puntaje);
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE LISTARPUNTAJE(IN id_alumno INT)
+BEGIN
+
+DECLARE test INT;
+DECLARE pregunta INT;
+DECLARE expediente INT;
+
+SET test =  (SELECT SUM(pr.puntaje) as pregunta FROM alumnos as a INNER JOIN preguntasyrespuestas as pr on pr.id_alumno = a.id
+INNER JOIN preguntas as p ON p.id = pr.id_pregunta WHERE p.categoria = 1 and a.id = id_alumno);
+
+SET pregunta =  (SELECT SUM(pr.puntaje) as pregunta FROM alumnos as a INNER JOIN preguntasyrespuestas as pr on pr.id_alumno = a.id
+INNER JOIN preguntas as p ON p.id = pr.id_pregunta WHERE p.categoria = 0 and a.id = id_alumno);
+
+SET expediente = (SELECT a.expediente FROM preguntasyrespuestas as pr INNER JOIN alumnos AS A on a.id = pr.id_alumno WHERE
+a.id = id_alumno GROUP BY a.id );
+
+select test,pregunta,expediente;
+END //
+DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `INSERTARALUMNO`(IN `nom` VARCHAR(150), IN `apep` VARCHAR(150), IN `apem` VARCHAR(150), IN `edadp` INT, IN `dni` VARCHAR(100), IN `tipod` VARCHAR(100), IN `sexop` VARCHAR(50), IN `direcc` VARCHAR(200), IN `naci` VARCHAR(150), IN `idsecc` INT, IN `idpadre` INT, IN `fechanac` VARCHAR(10))
+BEGIN
+START TRANSACTION;
+select @id :=  maximoid from controlinicial WHERE id=2;
+INSERT INTO `personas`(`id`, `nombre`, `apelledop`, `apelledom`, `edad`, `numeroide`, `tipodoc`, `sexo`, `direccion`, `telefono`, `celular`, `correo`, `nacionalidad`,`fechanac`) VALUES (@id+1,nom,apep,apém,edadp,dni,tipod,sexop,direcc,'SIN TELEFONO','SIN CELULAR','SIN CORREO',naci,fechanac);
+select @id2 :=  maximoid from controlinicial WHERE id=5;
+INSERT INTO `ALUMNOS`(`id`,`id_seccion`,`id_padre`,`id_persona`,estado,estadotest,estadopregunta,expediente) VALUES (@id2+1,idsecc,idpadre,@id+1,0,0,0,20);
+UPDATE controlinicial  set maximoid=@id+1 WHERE id=2;
+UPDATE controlinicial set maximoid=@id2+1 WHERE id=5;
+COMMIT;
+END$$
+DELIMITER ;
+
+
+
+CREATE TABLE detalle_preguntas(
+id INT PRIMARY KEY AUTO_INCREMENT,
+    idpregunta INT NOT NULL,
+    nom_pregunta VARCHAR(255),
+    puntaje INT,
+    FOREIGN KEY (idpregunta) REFERENCES 
+    preguntas (id)
+)
+
+
+////
+AGREGAR AUTO_INCREMENT ALA TABLA preguntasyrepuestas
+AGREGAR EL CAMPO CUESTIONARIO ALA TABLA alumnos
+AGREGAR EL CAMPO PUNTAJE ALA TABLA preguntasyrepuestas
+ALTERAR TABLA detalle_preguntas ON DELETE CASCADE
+
+
+
+alter preguntasyrepuestas auto_incrment 

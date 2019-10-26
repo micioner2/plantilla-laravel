@@ -1,11 +1,11 @@
 <template>
    <div class="row">
        <div class="col-lg-12">
-            <div class="box box-primary">
+            <div class="box box-success">
 
                 <div class="box box-default">
                     <div class="box-header with-border text-center">
-                        <h3 class="box-title">TEST-PREGUNTAS</h3>
+                        <h3 class="box-title">TEST-PSICOLÓGICO</h3>
                     </div>
                 </div>
 
@@ -15,7 +15,7 @@
                         <div class="col">
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <button @click="checked()" type="button" class="btn btn-primary btnagregar" data-toggle="modal" data-target="#modal-encuesta"><i class="fa fa-hand-paper-o"></i>&nbsp;&nbsp;Iniciar Encuesta</button>
+                                    <button @click="checked()" type="button" class="btn btn-success btnagregar" data-toggle="modal" data-target="#modal-encuesta"><i class="fa fa-hand-paper-o"></i>&nbsp;&nbsp;Empezar</button>
                                 </div>
                             </div>
                         </div>
@@ -25,8 +25,8 @@
             </div>
        </div>
 
-    <!-- MODAL -->
-        <div class="modal fade" id="modal-encuesta">
+    <!-- MODAL TEST -->
+        <div class="modal fade" id="modal-encuesta" style="overflow-y: scroll;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header modales">
@@ -39,30 +39,35 @@
                             <form class="form">
                                 <div class="box-body">
 
-
-                                    <div class="col-md-12  border-div">
+                                    <div class="col-md-6">
                                         <div class="form-group">
-                                            <!-- <button type="button" class="btn btn-primary" @click="listarPreguntaConRespuesta(), listarPreguntaConOpcion()">Actualizar</button> -->
-                                            <!-- <button type="button" class="btn btn-primary" @click="imprimir()">Imprimir</button> -->
-                                                <p class="pregunta">SELECCIONE AL ALUMNO</p>
-                                                <select class="form-control select2" style="width: 100%;" v-model="id_alumno" id="id_alumno">
-                                                    <option value="0" disabled>Seleccione</option>
-                                                    <option v-for="al in alumno" :key="al.id" v-text="al.nombre+' '+al.apelledop+' '+al.apelledom" :value="al.id"></option>
-                                                </select>
+                                            <p class="pregunta">Número de documento</p>
+                                             <div class="input-group">
+                                                <input type="number" class="form-control" placeholder="Digite su número de documento..." v-model="num_documento" v-on:keyup.enter="buscarAlumno()">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" @click="buscarAlumno()"><i class="fa fa-search"></i></button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                            
-                                    <div  class="col-md-12 border-div"  v-for="pregunta in preguntas" :key="pregunta.id">
-                                        <p class="pregunta">{{pregunta.nPregunta}}</p>
-                                        <input type="text" class="form-control" :name="'txt-'+pregunta.id" :id="'txt-'+pregunta.id" />
-                                        <br>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <p class="pregunta">SELECCIONE AL ALUMNO</p>
+                                            <select class="form-control select2" style="width: 100%;" v-model="id_alumno" id="id_alumno">
+                                                <option value="0" disabled>Seleccione</option>
+                                                <option v-for="al in alumno" :key="al.id" v-text="al.nombre+' '+al.apelledop+' '+al.apelledom" :value="al.id"></option>
+                                            </select>
+                                        </div>
                                     </div>
+  
+
                                     
-                                    <div class="col-md-12 border-div"  v-for="po in preguntasOpcion" :key="po.id">
+                                    <div class="col-md-12 border-div"  v-for="po in preguntasTest" :key="po.id">
                                         <p class="pregunta">{{po.nPregunta}}</p>
-                                        <div v-for="detalle in detallePreguntas" :key="detalle.id">
+                                        <div v-for="detalle in detallePreguntasTest" :key="detalle.id">
                                             <div class="separacion-r" v-if="po.id == detalle.idpregunta">
-                                                <input @change="agregarRadio(po.id)" type="radio" :name="'radio-'+po.id" :id="'radio-'+detalle.id"  :value="detalle.nom_pregunta">
+                                                <input @change="agregarRadio(po.id, detalle.puntaje)" type="radio" :name="'radio-'+po.id" :id="'radio-'+detalle.id"  :value="detalle.nom_pregunta">
                                                 <label class="opcion-r label-radio" :for="po.id">{{detalle.nom_pregunta}}</label>
                                             </div>
                                         </div>
@@ -73,12 +78,27 @@
                             </form>      
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-                            <button type="submit" class="btn btn-primary pull-right" @click="regPregunta()"><i class="fa fa-arrow-circle-right"></i>&nbsp;&nbsp;Registrar</button>
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;&nbsp;Cerrar</button>
+                            <button type="submit" class="btn btn-primary pull-right" @click="regPregunta()"><i class="fa fa-save"></i>&nbsp;&nbsp;Registrar</button>
                         </div>
                 </div>
             </div>
         </div>
+    <!--  -->
+
+    <!-- MODAL MENSAJE -->
+
+    <div id="modal-mensaje" class="modal fade modal-success" role="dialog" style="overflow-y: scroll;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="text-center" style="font-size:20px">Buscando Alumno....</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+
     </div>
 
 </template>
@@ -89,44 +109,59 @@ export default {
 
     data(){
         return {
-            preguntas:[],
-
-            preguntasOpcion:[],
-            detallePreguntas:[],
+            preguntasTest:[],
+            detallePreguntasTest:[],
 
             array: [],
             alumno: [],
 
+            num_documento: '',
             id_alumno : 0
+        }
+    },
+
+
+    
+    computed:{
+
+        calcularPuntaje(){
+            let resultado = 0.0;
+            for (let index = 0; index < this.array.length; index++) {
+                resultado += this.array[index].puntaje;
+                
+            }
+            return resultado
         }
     },
 
 
     methods:{
         
-        listarPreguntaConRespuesta(){
+        listarPreguntas(){
             let me = this;
-            let ruta = me.enlace+'/pregunta/rellenar';
+            let ruta = me.enlace+'/test/pregunta';
             axios.get(ruta).then((res) => {
-                me.preguntas = res.data.pregunta
+                me.preguntasTest = res.data.pregunta;
+                me.detallePreguntasTest = res.data.detalles;
             })
         },
 
-
-        listarPreguntaConOpcion(){
+        buscarAlumno(){
             let me = this;
-            let ruta = me.enlace+'/pregunta/opcion';
-            axios.get(ruta).then((res) => {
-                me.preguntasOpcion = res.data.pregunta;
-                me.detallePreguntas = res.data.detalles;
-            })
+            if (me.num_documento.length >= 8) {
+                $('#modal-mensaje').modal('show')
+                me.listarAlumno(me.num_documento);
+            }
         },
 
-        listarAlumno(){
+        listarAlumno(num_documento){
             let me = this;
-            let ruta = me.enlace+'/alumno';
+            let ruta = me.enlace+'/test/alumno?num_documento='+num_documento;
             axios.get(ruta).then((res) => {
-                me.alumno = res.data.alumno;
+                setTimeout(function() {
+                    $('#modal-mensaje').modal('hide')
+                    me.alumno = res.data.alumno;
+                },1000);
             })
         },
 
@@ -135,18 +170,17 @@ export default {
             let sw = 0
             this.id_alumno = $('#id_alumno').val()
 
+            for (let index = 0; index < this.preguntasTest.length; index++) {
+             
+                if (($('input[name="radio-'+this.preguntasTest[index].id+'"]:checked').length == 0)) {
+                    swal("Aviso!", "Marque todas las respuestas!", "error")
+                    sw = true
+                }
+            }
+
             if(this.id_alumno == null){
                 swal("Aviso!", "Seleccione al alumno!", "error")
                 sw = true
-
-            }else{
-
-                for (let index = 0; index < this.preguntas.length; index++) {
-                    if($("#txt-"+this.preguntas[index].id).val()==""){
-                        swal("Aviso!", "Complete las preguntas!", "error")
-                        sw = true
-                    }
-                }
 
             }
           
@@ -172,22 +206,12 @@ export default {
                         reverseButtons: true
                     }).then((result) => {
                         if (result.value) {
-                            
-                            for (let index = 0; index < this.preguntas.length; index++) {
-                                if($("#txt-"+this.preguntas[index].id).val()!=""){
-                                    this.array.push({
-                                        id: this.preguntas[index].id,
-                                        data: $("#txt-"+this.preguntas[index].id).val()
-                                    })
-                                }
-                                
-                            }
-            
                         
-                        let ruta = this.enlace + '/pregunta';
+                        let ruta = this.enlace + '/test/pregunta';
                         axios.post(ruta,{
                             'id_alumno' : this.id_alumno,
                             'data':this.array,
+                            'puntaje':this.calcularPuntaje
                             }).then((res => {
                             swal("Exito!", "Registro correcto!", "success")
                             location.reload(true);
@@ -198,7 +222,7 @@ export default {
                 }
         },
 
-        agregarRadio (id) {
+        agregarRadio (id, puntaje) {
         
             for (let index = 0; index < this.array.length; index++) {
                 if(this.array[index].id == id){
@@ -207,26 +231,21 @@ export default {
             }
             this.array.push({
                 id: id,
-                data: $('input[name="radio-'+id+'"]:checked').val()
+                data: $('input[name="radio-'+id+'"]:checked').val(),
+                puntaje: puntaje
             })
         },
 
         checked(){
             $( document ).ready(function() {
-                // $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-                //     checkboxClass: 'icheckbox_flat-green',
-                //     radioClass   : 'iradio_flat-green'
-                // })
+
                 $('.select2').select2()
             })
         }
     },
 
     mounted(){
-      this.listarPreguntaConRespuesta();
-      this.listarPreguntaConOpcion();
-      this.listarAlumno();
-
+      this.listarPreguntas();
     }
 }
 
@@ -258,11 +277,6 @@ export default {
     .opcion-r{
         font-weight: normal;
     }
-
-    /* .flat-red{
-        margin-bottom: 5px;
-    } */
-
 
     .label-radio {
         margin-right: 15px;
@@ -296,6 +310,12 @@ export default {
         box-shadow: none;
         -moz-box-shadow: none;
         -webkit-box-shadow: none;
+    }
+
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
     }
     
 </style>

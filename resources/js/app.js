@@ -5,14 +5,15 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 
-Vue.component('inicio', require('./components/Inicio.vue').default);
+Vue.component('cuestionario', require('./components/cuestionario').default);
+Vue.component('test', require('./components/Test.vue').default);
 
 
 const app = new Vue({
     el: '#app',
     data :{
         menu: 0,
-        enlace: 'http://localhost:8080/biblioteca/public',
+        enlace: 'http://localhost:8080/colegioinicial/public',
         login:{
             usuario:'',
             clave:''

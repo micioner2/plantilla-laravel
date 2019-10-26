@@ -13,11 +13,18 @@ Route::get('/','InicioController@index');
 
 Route::post('iniciar-sesion','InicioController@store');
 
-Route::get('pregunta/rellenar','PreguntaController@listPreguntaRellenar');
+Route::get('cuestionario/pregunta','CuestionarioController@listPreguntas');
 
-Route::get('pregunta/opcion','PreguntaController@listPreguntaOpcion');
+Route::post('cuestionario/pregunta','CuestionarioController@regRespuesta');
 
-Route::post('pregunta','PreguntaController@regRespuesta');
+Route::get('cuestionario/alumno','CuestionarioController@listAlumno');
 
-Route::get('alumno','PreguntaController@listAlumno');
+
+// 
+Route::get('test/pregunta','TestController@listPreguntas');
+
+Route::post('test/pregunta','TestController@regRespuesta');
+
+Route::get('test/alumno','TestController@listAlumno');
+
 
